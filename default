@@ -1,0 +1,25 @@
+upstream backend {
+        server ubuntu01:9000;
+        server ubuntu01:9001;
+        server ubuntu01:9002;
+}
+
+
+server {
+	listen 80 default_server;
+	listen [::]:80 default_server;
+
+	root /var/www/html;
+
+	index index.html index.htm index.nginx-debian.html;
+
+	server_name _;
+
+	location / {
+		proxy_pass http://backend;
+		proxy_set_header Host $host;
+		proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+		proxy_set_header X-Real-IP $remote_addr;
+	}
+
+}
